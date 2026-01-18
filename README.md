@@ -1,7 +1,14 @@
-# MediaThor
-Simplify communication between components in your C# applications. \
-**MediaThor** provides a source-generated, CQRS-friendly Mediator pattern with built-in support for dependency injection.
+<p align="center">
+  <img src="icon.png" alt="MediaThor" width="160" />
+  <h1 align="center">MediaThor</h1>
+</p>
 
+<p align="center">
+    Simplify communications between components in your C# applications.<br>
+    <b>MediaThor</b> provides a source-generated, CQRS-friendly Mediator pattern with built-in support for dependency injection.
+</p>
+
+---
 
 ## Features
 - Mediator CQRS-friendly
