@@ -1,0 +1,6 @@
+@MediaThor.Sandbox_HostAddress = http://localhost:5217
+
+GET {{MediaThor.Sandbox_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaThor", "MediaThor\MediaThor.csproj", "{FA38AFD4-464E-4D80-85E9-DC2AA527FD01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaThor.SourceGenerator", "MediaThor.SourceGenerator\MediaThor.SourceGenerator.csproj", "{2258F9A4-1743-4985-BBA0-2BD37AF59CF8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaThor.Sandbox", "MediaThor.Sandbox\MediaThor.Sandbox.csproj", "{D75C2075-7581-4491-9BB2-02BED538310E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA38AFD4-464E-4D80-85E9-DC2AA527FD01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA38AFD4-464E-4D80-85E9-DC2AA527FD01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA38AFD4-464E-4D80-85E9-DC2AA527FD01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA38AFD4-464E-4D80-85E9-DC2AA527FD01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2258F9A4-1743-4985-BBA0-2BD37AF59CF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2258F9A4-1743-4985-BBA0-2BD37AF59CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2258F9A4-1743-4985-BBA0-2BD37AF59CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2258F9A4-1743-4985-BBA0-2BD37AF59CF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D75C2075-7581-4491-9BB2-02BED538310E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D75C2075-7581-4491-9BB2-02BED538310E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D75C2075-7581-4491-9BB2-02BED538310E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D75C2075-7581-4491-9BB2-02BED538310E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
