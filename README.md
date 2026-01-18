@@ -20,11 +20,11 @@
 ## Getting Started
 Install the package via NuGet :
 ```bash
-dotnet add package MediaThor
+dotnet add package Saturna.MediaThor
 ```
 Or using the Package Manager :
 ```bash
-Install-Package MediaThor
+Install-Package Saturna.MediaThor
 ```
 
 
