@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
     <metadata>
-        <id>MediaThor</id>
+        <id>Saturna.MediaThor</id>
         <version>1.0.0</version>
         <authors>Neyzu</authors>
         <description>Source-generated and CQRS-friendly Mediator pattern with built-in support for dependency injection.</description>
+        <license type="file">LICENSE.txt</license>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <readme>README.md</readme>
         <icon>icon.png</icon>
+        <repository type="git" url="https://github.com/Neyzv/MediaThor" />
+        <projectUrl>https://github.com/Neyzv/MediaThor</projectUrl>
+        <tags>mediator cqrs source-generator dependency-injection mediathor saturna neyzu request handler api</tags>
         <dependencies>
             <group targetFramework="netstandard2.0" />
         </dependencies>
     </metadata>
     <files>
+        <file src="LICENSE.txt" target="" />
+        
         <file src="README.md" target="" />
         
         <file src="icon.png" target="" />
