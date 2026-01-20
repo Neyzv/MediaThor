@@ -15,7 +15,7 @@ var app = builder.Build();
 
 app.MapGet("/hello/{name}", async (
     string name,
-    IMediaThor mediator,
+    IMediator mediator,
     CancellationToken cancellationToken) =>
 {
     var query = new SayHelloQuery(name);
@@ -30,7 +30,7 @@ app.MapGet("/hello/{name}", async (
 
 app.MapGet("/year/{age:int}", async (
         byte age,
-        IMediaThor mediator,
+        IMediator mediator,
         CancellationToken cancellationToken) =>
     {
         var query = new SayYearOfBirthQuery(age);
@@ -42,6 +42,20 @@ app.MapGet("/year/{age:int}", async (
     .Produces<ushort>(StatusCodes.Status200OK)
     .WithSummary("Say year of birth.")
     .WithDescription("Simple route to say the year of birth.");
+
+app.MapGet("/enum/{amount:int}", (
+        byte amount,
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        var query = new StreamedQuery(amount);
+
+        return mediator.CreateStream(query, cancellationToken);
+    })
+    .WithName("EnumerateValues")
+    .Produces<ushort>(StatusCodes.Status200OK)
+    .WithSummary("Enumerate random int values.")
+    .WithDescription("Simple route to stream int values.");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

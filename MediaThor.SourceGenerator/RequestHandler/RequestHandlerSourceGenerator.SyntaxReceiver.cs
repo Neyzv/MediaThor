@@ -11,6 +11,7 @@ namespace MediaThor.SourceGenerator.RequestHandler;
 public sealed partial class RequestHandlerSourceGenerator
 {
     private const string RequestHandlerClassName = "IRequestHandler<";
+    private const string StreamRequestHandlerClassName = "IStreamRequestHandler<";
     private const string PipelineClassName = "IPipelineBehavior<";
     private const string MediaThorPipePriorityAttributeName = "MediaThorPipePriorityAttribute";
     
@@ -40,13 +41,31 @@ public sealed partial class RequestHandlerSourceGenerator
         var handledTypes = symbol
             .AllInterfaces
             .Select(x => x.ToDisplayString())
-            .Where(x => x.Contains(RequestHandlerClassName))
+            .Where(x => x.Contains(RequestHandlerClassName) || x.Contains(StreamRequestHandlerClassName))
             .ToImmutableArray();
 
         if (handledTypes.IsEmpty)
             throw new Exception("Can not get empty handled types list.");
 
         return new RequestHandlerInformation(symbol.ToDisplayString(), handledTypes);
+    }
+    
+    private static bool PredicateStreamHandlers(SyntaxNode node, CancellationToken ct)
+    {
+        if (node is not ClassDeclarationSyntax classSyntax)
+            return false;
+
+        if (classSyntax.BaseList is null)
+            return false;
+        
+        if (classSyntax.TypeParameterList is not null)
+            return false;
+
+        return classSyntax
+            .BaseList
+            .Types
+            .Select(static x => x.Type)
+            .Any(static x => x.ToString().Contains(StreamRequestHandlerClassName));
     }
     
     private static bool PredicatePipelines(SyntaxNode node, CancellationToken ct)

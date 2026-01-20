@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MediaThor
 {
     public sealed class MediaThor
-        : IMediaThor
+        : IMediator
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IMediaThorDispatcher _mediaThorDispatcher;
@@ -17,6 +18,10 @@ namespace MediaThor
         }
         
         public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default) =>
+            _mediaThorDispatcher.Dispatch(_serviceProvider, request, cancellationToken);
+
+        public IAsyncEnumerable<TResponse> CreateStream<TResponse>(IStreamRequest<TResponse> request,
+            CancellationToken cancellationToken = default) =>
             _mediaThorDispatcher.Dispatch(_serviceProvider, request, cancellationToken);
     }
 }

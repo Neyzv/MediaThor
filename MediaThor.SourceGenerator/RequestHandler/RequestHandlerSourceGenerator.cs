@@ -8,16 +8,22 @@ public sealed partial class RequestHandlerSourceGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var streamRequestHandlers =
+            context.SyntaxProvider
+                .CreateSyntaxProvider(PredicateStreamHandlers, TransformHandlers)
+                .Collect();
+        
         var requestHandlers = context.SyntaxProvider
             .CreateSyntaxProvider(PredicateHandlers, TransformHandlers)
-            .Collect();
+            .Collect()
+            .Combine(streamRequestHandlers);
         
-        var pipelines = context.SyntaxProvider
+        var services = context.SyntaxProvider
             .CreateSyntaxProvider(PredicatePipelines, TransformPipelines)
             .Collect()
             .Combine(requestHandlers);
 
-        context.RegisterSourceOutput(requestHandlers, static (spc, source) => GenerateMediaThorDispatcher(spc, source));
-        context.RegisterSourceOutput(pipelines, static (spc, source) => GenerateMediaThorServiceCollectionExtensions(spc, source.Left, source.Right));
+        context.RegisterSourceOutput(requestHandlers, static (spc, source) => GenerateMediaThorDispatcher(spc, source.Left, source.Right));
+        context.RegisterSourceOutput(services, static (spc, source) => GenerateMediaThorServiceCollectionExtensions(spc, source.Left, source.Right.Left,  source.Right.Right));
     }
 }

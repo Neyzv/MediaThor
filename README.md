@@ -15,6 +15,7 @@
 - Source generated request dispatcher
 - Source generated request handling pipeline
 - Request handling pipeline priority configuration
+- Streaming response
 
 
 ## Getting Started
@@ -55,12 +56,12 @@ public sealed class SayHelloHandler
 }
 ```
 \
-Then create your endpoint and inject the IMediaThor instance : \
+Then create your endpoint and inject the `IMediator` instance : \
 *Minimal API*
 ```cs
 app.MapGet("/hello/{name}", async (
     string name,
-    IMediaThor mediator,  // <-- here
+    IMediator mediator,  // <-- here
     CancellationToken cancellationToken) =>
 {
     var query = new SayHelloQuery(name);
@@ -73,7 +74,7 @@ app.MapGet("/hello/{name}", async (
 ```cs
 [ApiController]
 [Route("[controller]")]
-public class HelloController(IMediaThor mediator)  // <-- here
+public class HelloController(IMediator mediator)  // <-- here
     : ControllerBase
 {
     // GET api/hello/{name}
@@ -91,6 +92,58 @@ public class HelloController(IMediaThor mediator)  // <-- here
 And you're done !
 
 ## Going further
+### Handling `IAsyncEnumerable<T>`
+in this case you should use a `IStreamRequestHandler` associated with a `IStreamRequest`. It will allow you to interact directly with an IAsyncEnumerable. \
+\
+Start by creating your feature :
+```cs
+public sealed record RandomNumbersQuery(byte Amount) : IStreamRequest<int>;
+
+public sealed class RandomNumbersHandler
+    : IStreamRequestHandler<RandomNumbersQuery, int>
+{
+    public async IAsyncEnumerable<int> HandleAsync(RandomNumbersQuery request, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        for (var i = 0; i < request.Amount; i++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            yield return Random.Shared.Next(1, 1_000);
+            await Task.Yield();
+        }
+    }
+}
+```
+\
+Once that's done just create your endpoint :
+*Minimal API*
+```cs
+app.MapGet("/enum/{amount:int}", (
+    byte amount,
+    IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    var query = new StreamedQuery(amount);
+
+    return mediator.CreateStream(query, cancellationToken);
+});
+```
+*Controller Based API*
+```cs
+[ApiController]
+[Route("[controller]")]
+public class EnumController(IMediator mediator)
+    : ControllerBase
+{
+    // GET api/enum/{amount}
+    [HttpGet("{amount:int}")]
+    public async IAsyncEnumerable<int> SayHello(byte amount, CancellationToken cancellationToken)
+    {
+        var query = new StreamedQuery(amount);
+
+        return mediator.CreateStream(query, cancellationToken);
+    }
+}
+```
 ### IPipelineBehavior
 Just like some others library allows you can add some pipeline behaviors. \
 In this exemple we will implement two dummy behaviors. All behaviors should implement the `IPipelineBehavior<TRequest, TResponse>` interface. \
