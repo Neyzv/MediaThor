@@ -93,7 +93,7 @@ And you're done !
 
 ## Going further
 ### Handling `IAsyncEnumerable<T>`
-in this case you should use a `IStreamRequestHandler` associated with a `IStreamRequest`. It will allow you to interact directly with an IAsyncEnumerable. \
+In this case you should use a `IStreamRequestHandler` associated with a `IStreamRequest`. It will allow you to interact directly with an IAsyncEnumerable. \
 \
 Start by creating your feature :
 ```cs
@@ -114,7 +114,7 @@ public sealed class RandomNumbersHandler
 }
 ```
 \
-Once that's done just create your endpoint :
+Once that's done just create your endpoint : \
 *Minimal API*
 ```cs
 app.MapGet("/enum/{amount:int}", (
@@ -144,9 +144,59 @@ public class EnumController(IMediator mediator)
     }
 }
 ```
+
+### Handling request without response
+You can also send request that doesn't needs any response. It could be very usefull for `HTTP 204 No Response` or when you want to use it as an event handler. \
+To be performed, your request should implements the `IRequest` interface and the handler should implements `IRequestHandler<TRequest>`. \
+\
+Start by creating your feature :
+```cs
+public sealed record NoContentQuery : IRequest;
+
+public sealed class NoContentHandler
+    : IRequestHandler<NoContentQuery>
+{
+    public Task HandleAsync(NoContentQuery request, CancellationToken cancellationToken)
+    {
+        return Task.Delay(3_000, cancellationToken);
+    }
+}
+```
+Create your endpoint : \
+*Minimal API*
+```cs
+app.MapGet("/nocontent", async (
+    IMediator mediator,
+    CancellationToken cancellationToken) =>
+{
+    var query = new NoContentQuery();
+    await mediator.Send(query, cancellationToken);
+
+    return Results.NoContent();
+});
+```
+*Controller Based API*
+```cs
+[ApiController]
+[Route("[controller]")]
+public class NoContentController(IMediator mediator)
+    : ControllerBase
+{
+    // GET api/nocontent/
+    [HttpGet("/")]
+    public async Task NoContent(byte amount, CancellationToken cancellationToken)
+    {
+        var query = new NoContentQuery();
+        await mediator.Send(query, cancellationToken);
+
+        return NoContent();
+    }
+}
+```
+
 ### IPipelineBehavior
 Just like some others library allows you can add some pipeline behaviors. \
-In this exemple we will implement two dummy behaviors. All behaviors should implement the `IPipelineBehavior<TRequest, TResponse>` interface. \
+In this exemple we will implement two dummy behaviors. All behaviors should implement the `IPipelineBehavior<TRequest, TResponse>` or the `IPipelineBehavior<TRequest>` *(if the request doesn't have a result)* interface. \
 \
 We will start by creating a generic one, which will log in debug the received request.
 ```cs

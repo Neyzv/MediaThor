@@ -2,7 +2,6 @@
 
 namespace MediaThor.Sandbox.Behaviors;
 
-[MediaThorPipePriority(0)]
 public sealed class HelloSaidBehavior
     : IPipelineBehavior<SayHelloQuery, string>
 {

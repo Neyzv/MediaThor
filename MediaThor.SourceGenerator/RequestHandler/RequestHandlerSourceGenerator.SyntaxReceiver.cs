@@ -14,7 +14,7 @@ public sealed partial class RequestHandlerSourceGenerator
     private const string StreamRequestHandlerClassName = "IStreamRequestHandler<";
     private const string PipelineClassName = "IPipelineBehavior<";
     private const string MediaThorPipePriorityAttributeName = "MediaThorPipePriorityAttribute";
-    
+
     private static bool PredicateHandlers(SyntaxNode node, CancellationToken ct)
     {
         if (node is not ClassDeclarationSyntax classSyntax)
@@ -30,7 +30,25 @@ public sealed partial class RequestHandlerSourceGenerator
             .BaseList
             .Types
             .Select(static x => x.Type)
-            .Any(static x => x.ToString().Contains(RequestHandlerClassName));
+            .Any(static x => x.ToString().Contains(RequestHandlerClassName) && x.ToString().Split(',').Length is 1);
+    }
+    
+    private static bool PredicateGenericHandlers(SyntaxNode node, CancellationToken ct)
+    {
+        if (node is not ClassDeclarationSyntax classSyntax)
+            return false;
+
+        if (classSyntax.BaseList is null)
+            return false;
+        
+        if (classSyntax.TypeParameterList is not null)
+            return false;
+
+        return classSyntax
+            .BaseList
+            .Types
+            .Select(static x => x.Type)
+            .Any(static x => x.ToString().Contains(RequestHandlerClassName) && x.ToString().Split(',').Length is 2);
     }
 
     private static RequestHandlerInformation TransformHandlers(GeneratorSyntaxContext ctx, CancellationToken ct)

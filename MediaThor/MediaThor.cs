@@ -18,11 +18,15 @@ namespace MediaThor
         }
         
         public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default) =>
-            _mediaThorDispatcher.Dispatch(_serviceProvider, request, cancellationToken);
+            _mediaThorDispatcher.DispatchAsync(_serviceProvider, request, cancellationToken);
+        
+        public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default)
+            where TRequest : IRequest =>
+            _mediaThorDispatcher.DispatchAsync(_serviceProvider, request, cancellationToken);
 
         public IAsyncEnumerable<TResponse> CreateStream<TResponse>(IStreamRequest<TResponse> request,
             CancellationToken cancellationToken = default) =>
-            _mediaThorDispatcher.Dispatch(_serviceProvider, request, cancellationToken);
+            _mediaThorDispatcher.DispatchAsync(_serviceProvider, request, cancellationToken);
     }
 }
 

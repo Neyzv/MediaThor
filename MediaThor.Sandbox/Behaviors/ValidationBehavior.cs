@@ -1,28 +1,29 @@
-﻿using FluentValidation;
+﻿using MediaThor.Sandbox.Services.Validation;
 
 namespace MediaThor.Sandbox.Behaviors;
 
-[MediaThorPipePriority(1)]
-public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+[MediaThorPipePriority(0)]
+public sealed class ValidationBehavior<TRequest>(IRequestValidationService requestValidationService)
+    : IPipelineBehavior<TRequest>
+    where TRequest : IRequest
+{
+    public Task HandleAsync(TRequest request, RequestHandlerDelegate next, CancellationToken cancellationToken)
+    {
+        requestValidationService.ValidateRequest(request);
+
+        return next(cancellationToken);
+    }
+}
+
+[MediaThorPipePriority(0)]
+public sealed class ValidationBehavior<TRequest, TResponse>(IRequestValidationService requestValidationService)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>
 {
-    public async Task<TResponse> HandleAsync(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+    public Task<TResponse> HandleAsync(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        if (!validators.Any())
-            return await next(cancellationToken);
-        
-        var context = new ValidationContext<TRequest>(request);
+        requestValidationService.ValidateRequest(request);
 
-        var failures = validators
-            .Select(v => v.Validate(context))
-            .SelectMany(r => r.Errors)
-            .Where(f => f is not null)
-            .ToList();
-
-        if (failures.Count is not 0)
-            throw new ValidationException(failures);
-
-        return await next(cancellationToken);
+        return next(cancellationToken);
     }
 }

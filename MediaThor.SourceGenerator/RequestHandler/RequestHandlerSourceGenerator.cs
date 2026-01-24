@@ -8,22 +8,27 @@ public sealed partial class RequestHandlerSourceGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        var requestHandlers = context.SyntaxProvider
+            .CreateSyntaxProvider(PredicateHandlers, TransformHandlers)
+            .Collect();
+        
         var streamRequestHandlers =
             context.SyntaxProvider
                 .CreateSyntaxProvider(PredicateStreamHandlers, TransformHandlers)
                 .Collect();
         
-        var requestHandlers = context.SyntaxProvider
-            .CreateSyntaxProvider(PredicateHandlers, TransformHandlers)
+        var genericRequestHandlers = context.SyntaxProvider
+            .CreateSyntaxProvider(PredicateGenericHandlers, TransformHandlers)
             .Collect()
-            .Combine(streamRequestHandlers);
+            .Combine(streamRequestHandlers)
+            .Combine(requestHandlers);
         
         var services = context.SyntaxProvider
             .CreateSyntaxProvider(PredicatePipelines, TransformPipelines)
             .Collect()
-            .Combine(requestHandlers);
+            .Combine(genericRequestHandlers);
 
-        context.RegisterSourceOutput(requestHandlers, static (spc, source) => GenerateMediaThorDispatcher(spc, source.Left, source.Right));
-        context.RegisterSourceOutput(services, static (spc, source) => GenerateMediaThorServiceCollectionExtensions(spc, source.Left, source.Right.Left,  source.Right.Right));
+        context.RegisterSourceOutput(genericRequestHandlers, static (spc, source) => GenerateMediaThorDispatcher(spc, source.Left.Left, source.Left.Right));
+        context.RegisterSourceOutput(services, static (spc, source) => GenerateMediaThorServiceCollectionExtensions(spc, source.Left, source.Right.Left.Left,  source.Right.Left.Right, source.Right.Right));
     }
 }

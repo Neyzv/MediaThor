@@ -14,6 +14,16 @@ namespace MediaThor
         /// <typeparam name="TResponse">The type of the response retrieved from the request.</typeparam>
         /// <returns>A task that contains the handler result.</returns>
         Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Send a request that needs to be handled.
+        /// </summary>
+        /// <param name="request">The request to send.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <typeparam name="TRequest">The type of the request to send.</typeparam>
+        /// <returns></returns>
+        Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default)
+            where TRequest : IRequest;
         
         /// <summary>
         /// Send a streamable request that needs to be handled, and retrieve its result from its appropriated Handler.

@@ -1,6 +1,7 @@
 using FluentValidation;
 using MediaThor;
 using MediaThor.Sandbox.Features;
+using MediaThor.Sandbox.Services.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddOpenApi()
     .AddMediaThor()
+    .AddSingleton<IRequestValidationService, RequestValidationService>()
     .AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
@@ -56,6 +58,21 @@ app.MapGet("/enum/{amount:int}", (
     .Produces<ushort>(StatusCodes.Status200OK)
     .WithSummary("Enumerate random int values.")
     .WithDescription("Simple route to stream int values.");
+
+app.MapGet("/nocontent", async (
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        var query = new NoContentQuery();
+        await mediator.Send(query, cancellationToken);
+
+        return Results.NoContent();
+    })
+    .WithName("NoContent")
+    .Produces<ushort>(StatusCodes.Status204NoContent)
+    .WithSummary("No content here.")
+    .WithDescription("Simple route to test no content.");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
