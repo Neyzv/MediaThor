@@ -7,6 +7,7 @@
         <PackageId>Saturna.MediaThor</PackageId>
         <Version>1.2.1</Version>
         <Authors>Neyzu</Authors>
+        <PackageIcon>icon.png</PackageIcon>
         <Description>Source-generated and CQRS-friendly Mediator pattern with built-in support for dependency injection.</Description>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
