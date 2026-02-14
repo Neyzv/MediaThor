@@ -3,6 +3,17 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>MediaThor</RootNamespace>
+        
+        <PackageId>Saturna.MediaThor</PackageId>
+        <Version>1.2.1</Version>
+        <Authors>Neyzu</Authors>
+        <Description>Source-generated and CQRS-friendly Mediator pattern with built-in support for dependency injection.</Description>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/Neyzv/MediaThor</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
@@ -10,4 +21,16 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
     </ItemGroup>
 
+    <ItemGroup>
+        <None Include="..\MediaThor.SourceGenerator\bin\Release\netstandard2.0\MediaThor.SourceGenerator.dll"
+              Pack="true"
+              PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../LICENSE.txt" Pack="true" PackagePath=""/>
+        <None Include="../README.md" Pack="true" PackagePath=""/>
+        <None Include="../icon.png" Pack="true" PackagePath=""/>
+    </ItemGroup>
+    
 </Project>

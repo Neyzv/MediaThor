@@ -16,19 +16,19 @@ builder.Services
 var app = builder.Build();
 
 app.MapGet("/hello/{name}", async (
-    string name,
-    IMediator mediator,
-    CancellationToken cancellationToken) =>
-{
-    var query = new SayHelloQuery(name);
-    var result = await mediator.Send(query, cancellationToken);
+        string name,
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        var query = new SayHelloQuery(name);
+        var result = await mediator.Send(query, cancellationToken);
 
-    return Results.Ok(result);
-})
-.WithName("SayHello")
-.Produces<string>(StatusCodes.Status200OK)
-.WithSummary("Say hello.")
-.WithDescription("Simple route to say hello.");
+        return Results.Ok(result);
+    })
+    .WithName("SayHello")
+    .Produces<string>(StatusCodes.Status200OK)
+    .WithSummary("Say hello.")
+    .WithDescription("Simple route to say hello.");
 
 app.MapGet("/year/{age:int}", async (
         byte age,
@@ -45,14 +45,14 @@ app.MapGet("/year/{age:int}", async (
     .WithSummary("Say year of birth.")
     .WithDescription("Simple route to say the year of birth.");
 
-app.MapGet("/enum/{amount:int}", (
+app.MapGet("/enum/{amount:int}", async (
         byte amount,
         IMediator mediator,
         CancellationToken cancellationToken) =>
     {
         var query = new StreamedQuery(amount);
 
-        return mediator.CreateStream(query, cancellationToken);
+        return await mediator.CreateStream(query, cancellationToken);
     })
     .WithName("EnumerateValues")
     .Produces<ushort>(StatusCodes.Status200OK)

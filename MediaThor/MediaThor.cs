@@ -5,28 +5,38 @@ using System.Threading.Tasks;
 
 namespace MediaThor
 {
-    public sealed class MediaThor
+    internal sealed class MediaThor
         : IMediator
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IMediaThorDispatcher _mediaThorDispatcher;
+        private readonly IMediaThorHandlerProvider _handlerProvider;
+        private readonly IPipelineBuilder _pipelineBuilder;
 
-        public MediaThor(IServiceProvider serviceProvider, IMediaThorDispatcher mediaThorDispatcher)
+        public MediaThor(IServiceProvider serviceProvider,
+            IMediaThorHandlerProvider handlerProvider,
+            IPipelineBuilder pipelineBuilder)
         {
             _serviceProvider = serviceProvider;
-            _mediaThorDispatcher = mediaThorDispatcher;
+            _handlerProvider = handlerProvider;
+            _pipelineBuilder = pipelineBuilder;
         }
-        
-        public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default) =>
-            _mediaThorDispatcher.DispatchAsync(_serviceProvider, request, cancellationToken);
-        
+
+        /// <inheritdoc/>
         public Task Send<TRequest>(TRequest request, CancellationToken cancellationToken = default)
             where TRequest : IRequest =>
-            _mediaThorDispatcher.DispatchAsync(_serviceProvider, request, cancellationToken);
+            _pipelineBuilder.BuildPipeline(request, _serviceProvider, _handlerProvider.TryGetHandler(_serviceProvider, request)).Invoke(cancellationToken);
+        
+        /// <inheritdoc/>
+        public Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default) =>
+            _pipelineBuilder.BuildPipeline(request, _serviceProvider, _handlerProvider.TryGetHandler(_serviceProvider, request)).Invoke(cancellationToken);
 
-        public IAsyncEnumerable<TResponse> CreateStream<TResponse>(IStreamRequest<TResponse> request,
-            CancellationToken cancellationToken = default) =>
-            _mediaThorDispatcher.DispatchAsync(_serviceProvider, request, cancellationToken);
+        /// <inheritdoc/>
+        public Task<IAsyncEnumerable<TResponse>> CreateStream<TResponse>(IStreamRequest<TResponse> request,
+            CancellationToken cancellationToken = default)
+        {
+            return _pipelineBuilder.BuildPipeline(request, _serviceProvider, _handlerProvider.TryGetHandler(_serviceProvider, request))
+                .Invoke(cancellationToken);
+        }
     }
 }
 

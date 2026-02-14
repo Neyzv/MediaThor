@@ -10,7 +10,9 @@
         <IsRoslynComponent>true</IsRoslynComponent>
 
         <RootNamespace>MediaThor.SourceGenerator</RootNamespace>
-        <PackageId>MediaThor.SourceGenerator</PackageId>
+
+        <OutputItemType>Analyzer</OutputItemType>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
 
     <ItemGroup>

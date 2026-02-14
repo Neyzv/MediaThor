@@ -109,8 +109,7 @@ public sealed class SourceCodeWriter
     {
         AppendIndent();
 
-        _sb
-            .Append(OpenBracket)
+        _sb.Append(OpenBracket)
             .Append(NewLineChar);
 
         IndentationLevel++;

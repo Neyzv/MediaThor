@@ -28,7 +28,7 @@ public sealed partial class RequestHandlerSourceGenerator
             .Collect()
             .Combine(genericRequestHandlers);
 
-        context.RegisterSourceOutput(genericRequestHandlers, static (spc, source) => GenerateMediaThorDispatcher(spc, source.Left.Left, source.Left.Right));
+        context.RegisterSourceOutput(genericRequestHandlers, static (spc, source) => GenerateMediaThorHandlerProvider(spc, source.Right, source.Left.Left, source.Left.Right));
         context.RegisterSourceOutput(services, static (spc, source) => GenerateMediaThorServiceCollectionExtensions(spc, source.Left, source.Right.Left.Left,  source.Right.Left.Right, source.Right.Right));
     }
 }

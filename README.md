@@ -117,14 +117,14 @@ public sealed class RandomNumbersHandler
 Once that's done just create your endpoint : \
 *Minimal API*
 ```cs
-app.MapGet("/enum/{amount:int}", (
+app.MapGet("/enum/{amount:int}", async (
     byte amount,
     IMediator mediator,
     CancellationToken cancellationToken) =>
 {
     var query = new StreamedQuery(amount);
 
-    return mediator.CreateStream(query, cancellationToken);
+    return await mediator.CreateStream(query, cancellationToken);
 });
 ```
 *Controller Based API*
@@ -136,11 +136,13 @@ public class EnumController(IMediator mediator)
 {
     // GET api/enum/{amount}
     [HttpGet("{amount:int}")]
-    public async IAsyncEnumerable<int> SayHello(byte amount, CancellationToken cancellationToken)
+    public async IAsyncEnumerable<int> Enumerate(byte amount, [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var query = new StreamedQuery(amount);
-
-        return mediator.CreateStream(query, cancellationToken);
+        
+        await foreach (var item in (await mediator.CreateStream(query, cancellationToken))
+                      .WithCancellation(cancellationToken))
+            yield return item;
     }
 }
 ```
