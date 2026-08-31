@@ -34,7 +34,7 @@ public sealed partial class RequestHandlerSourceGenerator
                 .AppendLine("private readonly Dictionary<Type, Func<IServiceProvider, object, object>> _responseHandlers;")
                 .AppendLine();
 
-            writer.AppendLine("public MediaThorHandlerProvider()");
+            writer.AppendLine("public MediaThorHandlerProvider(IPipelineBuilder pipelineBuilder)");
             using (writer.CreateScope())
             {
                 writer.AppendLine("_responseHandlers = new Dictionary<Type, Func<IServiceProvider, object, object>>()")
@@ -56,11 +56,13 @@ public sealed partial class RequestHandlerSourceGenerator
                     writer.IndentationLevel++;
                     writer
                         .AppendIndent()
-                        .Append("(RequestHandlerDelegate)(token => serviceProvider.GetRequiredService<")
+                        .Append("pipelineBuilder.BuildPipeline((")
+                        .Append(requestType)
+                        .Append(")request, serviceProvider, (RequestHandlerDelegate)(token => serviceProvider.GetRequiredService<")
                         .Append(handledType)
                         .Append(">().HandleAsync((")
                         .Append(requestType)
-                        .Append(")request, token)),")
+                        .Append(")request, token))),")
                         .AppendLine();
                     writer.IndentationLevel--;
                 }
@@ -82,13 +84,15 @@ public sealed partial class RequestHandlerSourceGenerator
                     writer.IndentationLevel++;
                     writer
                         .AppendIndent()
-                        .Append("(RequestHandlerDelegate<")
+                        .Append("pipelineBuilder.BuildPipeline((")
+                        .Append(requestType)
+                        .Append(")request, serviceProvider, (RequestHandlerDelegate<")
                         .Append(responseType)
                         .Append(">)(token => serviceProvider.GetRequiredService<")
                         .Append(handledType)
                         .Append(">().HandleAsync((")
                         .Append(requestType)
-                        .Append(")request, token)),")
+                        .Append(")request, token))),")
                         .AppendLine();
                     writer.IndentationLevel--;
                 }

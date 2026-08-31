@@ -6,7 +6,7 @@ namespace MediaThor.Sandbox.Behaviors;
 [MediaThorPipePriority(1)]
 public sealed class DebugLogBehavior<TRequest, TResponse>
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+    where TRequest : AbstractInheritedRequestTypeQuery, IRequest<TResponse>
 {
     public Task<TResponse> HandleAsync(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {

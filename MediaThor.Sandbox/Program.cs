@@ -1,5 +1,6 @@
 using FluentValidation;
 using MediaThor;
+using MediaThor.Sandbox.Behaviors;
 using MediaThor.Sandbox.Features;
 using MediaThor.Sandbox.Services.Validation;
 
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddOpenApi()
     .AddMediaThor()
-    .AddSingleton<IRequestValidationService, RequestValidationService>()
+    .AddScoped<IRequestValidationService, RequestValidationService>()
     .AddValidatorsFromAssemblyContaining<Program>();
 
 var app = builder.Build();
@@ -73,12 +74,28 @@ app.MapGet("/nocontent", async (
     .WithSummary("No content here.")
     .WithDescription("Simple route to test no content.");
 
+app.MapGet("/inherit", async (
+        IMediator mediator,
+        CancellationToken cancellationToken) =>
+    {
+        var query = new InheritedRequestTypeQuery("sdfsdfsdf");
+        return await mediator.Send(query, cancellationToken);
+    })
+    .WithName("Inherit")
+    .Produces<ushort>(StatusCodes.Status200OK)
+    .WithSummary("Inherit query type.")
+    .WithDescription("Simple route to test inherit query type.");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+var scope =  app.Services.CreateScope();
+var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+var query = new InheritedRequestTypeQuery("sdfsdfsdf");
+await mediator.Send(query);
 
 app.UseHttpsRedirection();
 
