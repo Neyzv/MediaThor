@@ -5,7 +5,7 @@
         <RootNamespace>MediaThor</RootNamespace>
         
         <PackageId>Saturna.MediaThor</PackageId>
-        <Version>1.3.1</Version>
+        <Version>1.3.2</Version>
         <Authors>Neyzu</Authors>
         <PackageIcon>icon.png</PackageIcon>
         <Description>Source-generated and CQRS-friendly Mediator pattern with built-in support for dependency injection.</Description>

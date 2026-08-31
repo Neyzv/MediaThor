@@ -26,7 +26,6 @@ namespace MediaThor
         public RequestHandlerDelegate<TResponse> BuildPipeline<TRequest, TResponse>(TRequest request, IServiceProvider serviceProvider, RequestHandlerDelegate<TResponse> pipeline)
             where TRequest : IRequest<TResponse>
         {
-            var a = typeof(TRequest);
             foreach (var behavior in serviceProvider.GetServices<IPipelineBehavior<TRequest, TResponse>>().Reverse())
             {
                 var next = pipeline;
